@@ -1,7 +1,11 @@
 import os
+import zipfile
+import random
 out_filename = ".//out.txt"
 filename = ".//mytst2.txt"
-directory = '/home/ub/ws/cft-mig/mytstjupyter/tst/'
+directoryIn = './/in//'
+directoryOut = './/out//'
+
 
 def validate(ae,em,bf,res):
     if len(bf) == 2 :
@@ -13,6 +17,7 @@ def validate(ae,em,bf,res):
             lae[2]=""
             res.append(';'.join(lae).strip())
             lem=em.split(";")
+            lem[4]=""
             lem[5]="119"
             lem[7]="14M8D2WEW"
             res.append(';'.join(lem).strip())
@@ -27,10 +32,10 @@ def validate(ae,em,bf,res):
     
     
     
-def process(path,filename):
+def process(path,filename,outpath):
     header=[]
     footer=[]
-    out_filename =  path + filename+".out"
+    out_filename =  outpath + filename+".out"
     filename= path + filename
 
     bf=[]
@@ -60,16 +65,21 @@ def process(path,filename):
                     else:
                         sem=line
                 if line[0:2] == "BF": bf.append(line.strip())
-                if line[0:2] == "DN": 
-                    dn.append(line.strip())
+                if line[0:2] == "DN": continue
+                if line[0:2] == "SA": footer.append(line.strip())
+                if line[0:2] == "ES":
+                    es=line.strip()
+                    les= es.split(";")
+                    if les[10] == "":
+                        y=round(random.uniform(0.6,1.2),2)
+                        les[10]=str(y)
+                    print(';'.join(les))
+                    footer.append(';'.join(les).strip())
+                if line[0:2] == "EN":
+                    i_en +=1
                     if len(bf) > 0:
                         validate(sae,sem,bf,res)
                         bf=[]
-
-                if line[0:2] == "SA": footer.append(line.strip())
-                if line[0:2] == "ES": footer.append(line.strip())
-                if line[0:2] == "EN":
-                    i_en +=1
                     if i_en < 3 :
                         footer.append(line.strip())
                     else:
@@ -84,7 +94,10 @@ def process(path,filename):
             out_file.write('%s\n' % dn[i])
         for i in range (0,len(footer)):
             out_file.write('%s\n' % footer[i])
-for filename in os.listdir(directory):
+for filename in os.listdir(directoryIn):
+    if filename.endswith(".zip"):
+        with zipfile.ZipFile(directoryIn+filename, 'r') as myzip:
+            myzip.extractall(directoryIn)
     if filename.endswith(".txt"):
         print(filename)
-        process(directory,filename)    
+        process(directoryIn,filename,directoryOut)    
