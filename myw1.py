@@ -11,9 +11,23 @@ logging.basicConfig(filename='logfile.log',level=logging.DEBUG,format='%(asctime
 dirpath = pathlib.Path.cwd()/'in'
 dirout=pathlib.Path.cwd()/'out'
 dirrejet=pathlib.Path.cwd()/'rejet'
+raison =""
 assert(dirpath.is_dir())
 assert(dirout.is_dir())
 assert(dirrejet.is_dir())
+
+def is_valide(ae,em,bf):
+    if ae == "":
+        return False
+    elif em == "":
+        return False
+    elif ae.split(";")[3] == "":
+        return False
+    elif float(em.split(";")[8]) < 30 :
+        return False
+    else:
+        return True
+        
 
 def validate(ae,em,bf,res):
     if len(bf) == 2 :
@@ -38,47 +52,49 @@ def validate(ae,em,bf,res):
     return res
 
 
+def reject_file(filename, raison ):
+                fname=filename.name
+                logging.error('This file is rejected KO raison  '+ raison  + fname)
+                shutil.move(filename, dirrejet/fname)                
+                zipfile=(fname.split(".")[0])+'.zip'
+                fl=pathlib.Path(dirpath/zipfile)
+                if fl.is_file():
+                    shutil.move(fl, dirrejet/zipfile)
+                    logging.error('This file is rejected KO : ' +  zipfile)
+                    
+def post_process(filename):
+    with open(filename) as f:
+        lines=f.readlines()
+        for i,line in enumerate(lines,4):
+            if line[0:2] == "AE":
+                if (line).split(";")[3] == "": 
+                    reject_file(filename, "ID empty ")
+                    break
+            if line[0:2] == "EM": 
+                if float((line).split(";")[8]) < 30 : 
+                    reject_file(filename, "In EM freq lt 30.0 .")
+                    break
+                
 
-def pre_process(path,filename,dirrejet):
+
+def pre_process(filename):
     with open(filename) as f:
             lines=f.readlines()
-            AE=[item for item in lines if item[0:2] == "AE"]
-            EM=[item for item in lines if item[0:2] == "EM"]
             BF=[item for item in lines if item[0:2] == "BF"]
             EN=[item for item in lines if item[0:2] == "EN"]
             
-#             if AE.split(";")[3] == "":
-#                 logging.error('This file rejected KO raison AE ID not set : ' + fname)
-#                 shutil.move(filename, dirrejet/fname)               
-#                 zipfile=(fname.split(".")[0])+'.zip'
-#                 fl=pathlib.Path(path/zipfile)
-#                 if fl.is_file():
-#                     shutil.move(fl, dirrejet/zipfile)
-#                     logging.error('This file rejected KO : ' +  zipfile)
-#                 return False
-#             else: 
-#                 continue
-
-            if len(AE) == 0 or len(EM) == 0 or len(BF) == 0 or len(EN) ==0 :
-                fname=filename.name
-                logging.error('This file rejected KO raison AE/EM/BF/EN not set : ' + fname)
-                shutil.move(filename, dirrejet/fname)
-                
-                zipfile=(fname.split(".")[0])+'.zip'
-                fl=pathlib.Path(path/zipfile)
-                if fl.is_file():
-                    shutil.move(fl, dirrejet/zipfile)
-                    logging.error('This file rejected KO : ' +  zipfile)
+            if len(BF) == 0 or len(EN) == 0 or lines[4][0:2] != "AE" or lines[5][0:2] != "EM":
+                reject_file(filename, "NO BF or no EN or not starting with AE or EM pb")
                 return False
             else:
                 logging.info('Pre_processing OK for file : ' + filename.name)
                 return True
                 
 
-def process(path,filename,outpath):
+def process(filename):
     header=[]
     footer=[]
-    out_filename =  outpath/filename.name
+    out_filename =  dirout/filename.name
     
 
     bf=[]
@@ -93,6 +109,7 @@ def process(path,filename,outpath):
                 if i < 4 :header.append(line.strip())
                 if line[0:2] == "AE":
                     if len(bf) > 0:
+                        is_valide(sae,sem,bf)
                         validate(sae,sem,bf,res)
                         sae=line
                         bf=[]
@@ -156,10 +173,14 @@ for f in dirpath.iterdir():
     if (f.name).endswith(".txt"):
         i_txt += 1
         logging.info('pre_process file ===>  : '+ f.name)
-        res = pre_process(dirpath,f,dirrejet) 
+        res = pre_process(f) 
         if res == True :
-            process(dirpath,f,dirout)
+            process(f)
         else:
             continue
-
-logging.info('End processing of : ' + str(i_zip) + ' zip files to :'+ str(i_txt) + ' txt files')
+logging.info('End processing of : ' + str(i_zip) + ' zip files to :'+ str(i_txt) + ' txt files')           
+for f in dirout.iterdir():
+    if (f.name).endswith(".txt"):
+        logging.info('Post_process file ===>  : '+ f.name)
+        post_process(f)
+logging.info('End Post processing')
