@@ -83,6 +83,12 @@ def pre_process(filename):
             BF=[item for item in lines if item[0:2] == "BF"]
             EN=[item for item in lines if item[0:2] == "EN"]
             
+            for i,line in enumerate(lines,4):
+                if line[0:2] == "AE" :
+                    if lines[i][0:2] != "EM" : 
+                        reject_file(filename, "NO BF or no EN or not starting with AE or EM pb")
+                        break
+            
             if len(BF) == 0 or len(EN) == 0 or lines[4][0:2] != "AE" or lines[5][0:2] != "EM":
                 reject_file(filename, "NO BF or no EN or not starting with AE or EM pb")
                 return False
