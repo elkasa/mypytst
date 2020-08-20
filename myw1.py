@@ -4,8 +4,8 @@ import logging
 import pathlib 
 
 '''
-version 1.0 
-20/08/2020 12:34
+version 1.1
+20/08/2020 13:20
 '''
 
 current_dir=pathlib.Path.cwd()
