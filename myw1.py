@@ -3,7 +3,10 @@ import random
 import logging
 import pathlib 
 
-
+'''
+version 1.0 
+20/08/2020 12:34
+'''
 
 current_dir=pathlib.Path.cwd()
 logging.basicConfig(filename='logfile.log',level=logging.DEBUG,format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
@@ -87,10 +90,10 @@ def pre_process(filename):
                 if line[0:2] == "AE" :
                     if lines[i][0:2] != "EM" : 
                         reject_file(filename, "NO BF or no EN or not starting with AE or EM pb")
-                        break
+                        return False
             
-            if len(BF) == 0 or len(EN) == 0 or lines[4][0:2] != "AE" or lines[5][0:2] != "EM":
-                reject_file(filename, "NO BF or no EN or not starting with AE or EM pb")
+            if len(BF) == 0 or len(EN) == 0 :
+                reject_file(filename, "NO BF or no EN ")
                 return False
             else:
                 logging.info('Pre_processing OK for file : ' + filename.name)
