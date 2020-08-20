@@ -5,7 +5,7 @@ import pathlib
 
 '''
 version 1.1
-20/08/2020 13:20
+20/08 19:50 fix em et bf rule
 '''
 
 current_dir=pathlib.Path.cwd()
@@ -41,13 +41,22 @@ def validate(ae,em,bf,res):
             lae=ae.split(";")
             lae[2]=""
             res.append(';'.join(lae).strip())
+            lbf1=bf[0].split(";")
+            lbf1[2]="A"
+            lbf1[8]="MXA"
+            lbf2=bf[1].split(";")
+            lbf2[2]="A"
+            lbf2[8]="MXA"
             lem=em.split(";")
+            lem[2]="A"
             lem[4]=""
             lem[5]="119"
             lem[7]="14M8D2WEW"
             res.append(';'.join(lem).strip())
-            res.append(bf[0])
-            res.append(bf[1])
+            res.append(';'.join(lbf1).strip())
+            res.append(';'.join(lbf2).strip())
+            #res.append(bf[0])
+            #res.append(bf[1])
         else:
             pass
     else:
@@ -86,6 +95,11 @@ def pre_process(filename):
             BF=[item for item in lines if item[0:2] == "BF"]
             EN=[item for item in lines if item[0:2] == "EN"]
             
+            for i,line in enumerate(lines,4):
+                if line[0:2] == "AE" :
+                    if lines[i][0:2] != "EM" : 
+                        reject_file(filename, "NO BF or no EN or not starting with AE or EM pb")
+                        return False
             
             if len(BF) == 0 or len(EN) == 0 :
                 reject_file(filename, "NO BF or no EN ")
