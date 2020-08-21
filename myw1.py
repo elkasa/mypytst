@@ -45,6 +45,7 @@ def validate(ae,em,bf,res):
             lbf2='BF;;A;;;2125.3;2140.1;M;MXA;'
             lem=em.split(";")
             lem[2]="A"
+            lem[3]=""
             lem[4]=""
             lem[5]="119"
             lem[7]="14M8D2WEW"
@@ -146,7 +147,7 @@ def process(filename):
                         footer.append(es)
                     else:
                         if les[10] == "":
-                            y=round(random.uniform(0.6,1.2),2)
+                            y=round(random.uniform(0.6,1.01),2)
                             les[10]=str(y)
                             footer.append(';'.join(les).strip())
                     #footer.append(es)
