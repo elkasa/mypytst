@@ -4,8 +4,8 @@ import logging
 import pathlib 
 
 '''
-version 1.1
-20/08 19:50 fix em et bf rule
+version 1.2
+21/08 08:00 fix  bf rule static
 '''
 
 current_dir=pathlib.Path.cwd()
@@ -41,22 +41,16 @@ def validate(ae,em,bf,res):
             lae=ae.split(";")
             lae[2]=""
             res.append(';'.join(lae).strip())
-            lbf1=bf[0].split(";")
-            lbf1[2]="A"
-            lbf1[8]="MXA"
-            lbf2=bf[1].split(";")
-            lbf2[2]="A"
-            lbf2[8]="MXA"
+            lbf1='BF;;A;;;1935.3;1950.1;M;MXA;'
+            lbf2='BF;;A;;;2125.3;2140.1;M;MXA;'
             lem=em.split(";")
             lem[2]="A"
             lem[4]=""
             lem[5]="119"
             lem[7]="14M8D2WEW"
             res.append(';'.join(lem).strip())
-            res.append(';'.join(lbf1).strip())
-            res.append(';'.join(lbf2).strip())
-            #res.append(bf[0])
-            #res.append(bf[1])
+            res.append(lbf1)
+            res.append(lbf2)
         else:
             pass
     else:
