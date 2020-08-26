@@ -2,10 +2,14 @@ import shutil
 import random
 import logging
 import pathlib 
+from zipfile import ZipFile
+import os
+from os.path import basename
+
 
 '''
-version 1.3
-21/08 20:00 fix   supprission ctl ae/em
+version 1.4
+26/08 12:30  fix ae duplication and 30 <em< 36 
 '''
 
 current_dir=pathlib.Path.cwd()
@@ -18,7 +22,7 @@ raison =""
 assert(dirpath.is_dir())
 assert(dirout.is_dir())
 assert(dirrejet.is_dir())
-
+dct=dict()
 def is_valide(ae,em,bf):
     if ae == "":
         return False
@@ -33,6 +37,7 @@ def is_valide(ae,em,bf):
         
 
 def validate(ae,em,bf,res):
+    res=[]
     if len(bf) == 2 :
         bf1=bf[0].split(";")[5]
         bf2=bf[0].split(";")[6]
@@ -40,6 +45,7 @@ def validate(ae,em,bf,res):
             and bf[1].split(";")[6] == '2140.1':
             lae=ae.split(";")
             lae[2]=""
+            id=lae[3]
             res.append(';'.join(lae).strip())
             lbf1='BF;;A;;;1935.3;1950.1;M;MXA;'
             lbf2='BF;;A;;;2125.3;2140.1;M;MXA;'
@@ -52,6 +58,7 @@ def validate(ae,em,bf,res):
             res.append(';'.join(lem).strip())
             res.append(lbf1)
             res.append(lbf2)
+            dct[id]=res
         else:
             pass
     else:
@@ -78,8 +85,8 @@ def post_process(filename):
                     reject_file(filename, "ID empty ")
                     break
             if line[0:2] == "EM": 
-                if float((line).split(";")[8]) < 30 : 
-                    reject_file(filename, "In EM freq lt 30.0 .")
+                if float((line).split(";")[8]) < 30 or float((line).split(";")[8]) > 36: 
+                    reject_file(filename, "In EM freq lt 30.0 or gt 36.0")
                     break
                 
 
@@ -113,7 +120,8 @@ def process(filename):
     bf=[]
     dn=[]
     sem=""
-    res=[]
+    #res=[]
+    dct.clear()
     i_en = 0
     idx = 0
     with open(filename) as f:
@@ -160,16 +168,17 @@ def process(filename):
                         footer.append(line.strip())
                     else:
                         continue
-
     with open(out_filename, 'w') as out_file:
         for i in range (0,len(header)):
             out_file.write('%s\n' % header[i])
-        for i in range (0,len(res)):
-            out_file.write('%s\n' % res[i])
+        for key, value in dct.items():
+            for i in range (0,len(value)):
+                out_file.write('%s\n' % value[i])
         for i in range (0,len(dn)):
             out_file.write('%s\n' % dn[i])
         for i in range (0,len(footer)):
             out_file.write('%s\n' % footer[i])
+
 
 
 
@@ -186,8 +195,8 @@ for f in dirpath.iterdir():
     if (f.name).endswith(".txt"):
         i_txt += 1
         logging.info('pre_process file ===>  : '+ f.name)
-        res = pre_process(f) 
-        if res == True :
+        #res = pre_process(f) 
+        if pre_process(f) == True :
             process(f)
         else:
             continue
@@ -197,3 +206,20 @@ for f in dirout.iterdir():
         logging.info('Post_process file ===>  : '+ f.name)
         post_process(f)
 logging.info('End Post processing')
+
+"""
+activate to zip file in out directory
+for f in dirout.iterdir():  
+    if (f.name).endswith(".txt"):
+        zipfile=((f.name).split(".")[0])+'.zip'
+        logging.info('zip  file ===>  : '+ f.name)
+        print(f)
+        print(zipfile)
+        with ZipFile(str(dirout)+ '/'+zipfile, 'w') as myzip:
+            myzip.write(str(f),basename(str(f)))
+            if os.path.exists(str(f)): os.remove(str(f))
+    else : continue
+
+"""
+
+logging.info('End Zip ')
