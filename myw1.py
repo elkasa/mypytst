@@ -199,16 +199,7 @@ def process(filename):
                         les[10] = str(y)
                         footer.append(';'.join(les).strip())
             if line[0:2] == "EN":
-                pass
-            if line[0:2] == "EN":
-                i_en += 1
-                if len(bf) > 0:
-                    validate(sae, sem, bf, dct)
-                    bf = []
-                if i_en < 3:
-                    footer.append(line.strip())
-                else:
-                    continue
+                footer.append(line.strip())
     if len(dct) > 0:
         with open(out_filename, 'w') as out_file:
             for i in range(0, len(header)):
