@@ -213,29 +213,30 @@ def process(filename):
     if len(dct) > 0:
         with open(out_filename, 'w') as out_file:
             for i in range(0, len(header)):
-                out_file.write('%s\n' % header[i])
+                out_file.write('%s\r\n' % header[i])
             for key, value in dct.items():
                 for i in range(0, len(value)):
-                    out_file.write('%s\n' % value[i])
+                    out_file.write('%s\r\n' % value[i])
             for i in range(0, len(dn)):
-                out_file.write('%s\n' % dn[i])
+                out_file.write('%s\r\n' % dn[i])
             for i in range(0, len(footer)):
-                out_file.write('%s\n' % footer[i])
+                out_file.write('%s\r\n' % footer[i])
             for value in en:
-                out_file.write('%s\n' % value)
+                out_file.write('%s\r\n' % value)
 
     elif len(dct3) > 0:
         with open(out_filename, 'w') as out_file:
             for i in range(0, len(header)):
-                out_file.write('%s\n' % header[i])
+                out_file.write('%s\r\n' % header[i])
             for key, value in dct3.items():
                 for i in range(0, len(value)):
-                    out_file.write('%s\n' % value[i])
+                    out_file.write('%s\r\n' % value[i])
             for i in range(0, len(dn)):
-                out_file.write('%s\n' % dn[i])
+                out_file.write('%s\r\n' % dn[i])
             for i in range(0, len(footer)):
-                out_file.write('%s\n' % footer[i])
-                # out_file.write('%s' % footer[-1].strip())
+                out_file.write('%s\r\n' % footer[i])
+            for value in en:
+                out_file.write('%s\r\n' % value)
 
     else:
         reject_file(filename, "0 valid BF")
