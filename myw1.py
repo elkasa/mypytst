@@ -8,9 +8,8 @@ from os.path import basename
 
 
 '''
-version 1.5
-26/08 20:00  fix ae duplication and 30 <em< 36 
- del EN fix 3 BF if not 2 BF
+version 1.6
+27/08  restore en
 '''
 
 current_dir = pathlib.Path.cwd()
@@ -156,6 +155,7 @@ def process(filename):
     sem = ""
     # res=[]
     dct.clear()
+    dct3.clear()
     i_en = 0
     idx = 0
     with open(filename) as f:
@@ -200,15 +200,15 @@ def process(filename):
                         footer.append(';'.join(les).strip())
             if line[0:2] == "EN":
                 pass
-            # if line[0:2] == "EN":
-            #     i_en += 1
-            #     if len(bf) > 0:
-            #         validate(sae, sem, bf, dct)
-            #         bf = []
-            #     if i_en < 3:
-            #         footer.append(line.strip())
-            #     else:
-            #         continue
+            if line[0:2] == "EN":
+                i_en += 1
+                if len(bf) > 0:
+                    validate(sae, sem, bf, dct)
+                    bf = []
+                if i_en < 3:
+                    footer.append(line.strip())
+                else:
+                    continue
     if len(dct) > 0:
         with open(out_filename, 'w') as out_file:
             for i in range(0, len(header)):
@@ -244,7 +244,8 @@ for f in dirpath.iterdir():
     if (f.name).endswith(".zip"):
         i_zip += 1
         logging.info('unzip file  : ' + f.name)
-        shutil.unpack_archive(f, dirpath)
+        print(f)
+        shutil.unpack_archive(f, dirpath, 'zip')
 for f in dirpath.iterdir():
     if (f.name).endswith(".txt"):
         i_txt += 1
