@@ -60,8 +60,8 @@ def validate(ae, em, bf, res):
             lae[2] = ""
             id = lae[3]
             res.append(';'.join(lae).strip())
-            lbf1 = 'BF;;A;;;1935.3;1950.1;M;MXA;'
-            lbf2 = 'BF;;A;;;2125.3;2140.1;M;MXA;'
+            lbf1 = 'BF;;A;;;1935.3;1950.1;M;MBO;'
+            lbf2 = 'BF;;A;;;2125.3;2140.1;M;MBO;'
             lem = em.split(";")
             lem[2] = "A"
             lem[3] = ""
@@ -84,8 +84,8 @@ def validate(ae, em, bf, res):
             lae[2] = ""
             id = lae[3]
             res3.append(';'.join(lae).strip())
-            lbf1 = 'BF;;A;;;1935.3;1950.1;M;MXA;'
-            lbf2 = 'BF;;A;;;2125.3;2140.1;M;MXA;'
+            lbf1 = 'BF;;A;;;1935.3;1950.1;M;MBO;'
+            lbf2 = 'BF;;A;;;2125.3;2140.1;M;MBO;'
             lem = em.split(";")
             lem[2] = "A"
             lem[3] = ""
