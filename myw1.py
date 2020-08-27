@@ -5,11 +5,12 @@ import pathlib
 from zipfile import ZipFile
 import os
 from os.path import basename
+import hashlib
 
 
 '''
-version 1.6
-27/08  restore en
+version 1.7
+27/08  fix en +  float em 
 '''
 
 current_dir = pathlib.Path.cwd()
@@ -120,7 +121,13 @@ def post_process(filename):
                     reject_file(filename, "ID empty ")
                     break
             if line[0:2] == "EM":
-                if float((line).split(";")[8]) < 30 or float((line).split(";")[8]) > 36:
+                v = ((line).split(";")[8])
+                if v.isdigit() != True:
+                    v = v.replace(',', '.', 1)
+                # print(v.isdigit())
+                # print(v)
+
+                if float(v) < 30 or float(v) > 36:
                     reject_file(filename, "In EM freq lt 30.0 or gt 36.0")
                     break
 
@@ -152,6 +159,7 @@ def process(filename):
 
     bf = []
     dn = []
+    en = set()
     sem = ""
     # res=[]
     dct.clear()
@@ -165,7 +173,7 @@ def process(filename):
                 header.append(line.strip())
             if line[0:2] == "AE":
                 if len(bf) > 0:
-                    is_valide(sae, sem, bf)
+                    # is_valide(sae, sem, bf)
                     validate(sae, sem, bf, dct)
                     sae = line
                     bf = []
@@ -199,7 +207,9 @@ def process(filename):
                         les[10] = str(y)
                         footer.append(';'.join(les).strip())
             if line[0:2] == "EN":
-                footer.append(line.strip())
+                en.add(line.strip())
+                # print(en)
+                # footer.append(line.strip())
     if len(dct) > 0:
         with open(out_filename, 'w') as out_file:
             for i in range(0, len(header)):
@@ -211,6 +221,9 @@ def process(filename):
                 out_file.write('%s\n' % dn[i])
             for i in range(0, len(footer)):
                 out_file.write('%s\n' % footer[i])
+            for value in en:
+                out_file.write('%s\n' % value)
+
     elif len(dct3) > 0:
         with open(out_filename, 'w') as out_file:
             for i in range(0, len(header)):
@@ -222,6 +235,7 @@ def process(filename):
                 out_file.write('%s\n' % dn[i])
             for i in range(0, len(footer)):
                 out_file.write('%s\n' % footer[i])
+                # out_file.write('%s' % footer[-1].strip())
 
     else:
         reject_file(filename, "0 valid BF")
@@ -241,7 +255,7 @@ for f in dirpath.iterdir():
     if (f.name).endswith(".txt"):
         i_txt += 1
         logging.info('pre_process file ===>  : ' + f.name)
-        #res = pre_process(f)
+        # res = pre_process(f)
         if pre_process(f) == True:
             process(f)
         else:
@@ -256,7 +270,7 @@ logging.info('End Post processing')
 
 """
 activate to zip file in out directory
-for f in dirout.iterdir():  
+for f in dirout.iterdir():
     if (f.name).endswith(".txt"):
         zipfile=((f.name).split(".")[0])+'.zip'
         logging.info('zip  file ===>  : '+ f.name)
