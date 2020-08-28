@@ -5,12 +5,12 @@ import pathlib
 from zipfile import ZipFile
 import os
 from os.path import basename
-import hashlib
+
 
 
 '''
-version 1.7
-27/08  fix en +  float em 
+version 1.8
+28/08  fix es 
 '''
 
 current_dir = pathlib.Path.cwd()
@@ -133,7 +133,8 @@ def post_process(filename):
 
 
 def pre_process(filename):
-    with open(filename) as f:
+    with open(filename,encoding='utf-8', errors='ignore') as f:
+        #print(f'=============>{f}')
         lines = f.readlines()
         BF = [item for item in lines if item[0:2] == "BF"]
         EN = [item for item in lines if item[0:2] == "EN"]
@@ -166,7 +167,7 @@ def process(filename):
     dct3.clear()
     i_en = 0
     idx = 0
-    with open(filename) as f:
+    with open(filename,encoding='utf-8', errors='ignore') as f:
         lines = f.readlines()
         for i, line in enumerate(lines):
             if i < 4:
@@ -201,11 +202,13 @@ def process(filename):
                 les = es.split(";")
                 if les[2] == "S":
                     footer.append(es)
-                else:
+                elif les[2] == "" or les[2] == "A":
                     if les[10] == "":
                         y = round(random.uniform(0.6, 1.01), 2)
                         les[10] = str(y)
                         footer.append(';'.join(les).strip())
+                    else:
+                        footer.append(es)
             if line[0:2] == "EN":
                 en.add(line.strip())
                 # print(en)
@@ -213,30 +216,30 @@ def process(filename):
     if len(dct) > 0:
         with open(out_filename, 'w') as out_file:
             for i in range(0, len(header)):
-                out_file.write('%s\r\n' % header[i])
+                out_file.write('%s\n' % header[i])
             for key, value in dct.items():
                 for i in range(0, len(value)):
-                    out_file.write('%s\r\n' % value[i])
+                    out_file.write('%s\n' % value[i])
             for i in range(0, len(dn)):
-                out_file.write('%s\r\n' % dn[i])
+                out_file.write('%s\n' % dn[i])
             for i in range(0, len(footer)):
-                out_file.write('%s\r\n' % footer[i])
+                out_file.write('%s\n' % footer[i])
             for value in en:
-                out_file.write('%s\r\n' % value)
+                out_file.write('%s\n' % value)
 
     elif len(dct3) > 0:
         with open(out_filename, 'w') as out_file:
             for i in range(0, len(header)):
-                out_file.write('%s\r\n' % header[i])
+                out_file.write('%s\n' % header[i])
             for key, value in dct3.items():
                 for i in range(0, len(value)):
-                    out_file.write('%s\r\n' % value[i])
+                    out_file.write('%s\n' % value[i])
             for i in range(0, len(dn)):
-                out_file.write('%s\r\n' % dn[i])
+                out_file.write('%s\n' % dn[i])
             for i in range(0, len(footer)):
-                out_file.write('%s\r\n' % footer[i])
+                out_file.write('%s\n' % footer[i])
             for value in en:
-                out_file.write('%s\r\n' % value)
+                out_file.write('%s\n' % value)
 
     else:
         reject_file(filename, "0 valid BF")
@@ -250,8 +253,8 @@ for f in dirpath.iterdir():
     if (f.name).endswith(".zip"):
         i_zip += 1
         logging.info('unzip file  : ' + f.name)
-        print(f)
-        shutil.unpack_archive(f, dirpath, 'zip')
+        #print(f)
+        shutil.unpack_archive(f, dirpath,'zip')
 for f in dirpath.iterdir():
     if (f.name).endswith(".txt"):
         i_txt += 1
@@ -281,7 +284,6 @@ for f in dirout.iterdir():
             myzip.write(str(f),basename(str(f)))
             if os.path.exists(str(f)): os.remove(str(f))
     else : continue
-
 """
 
 logging.info('End Zip ')
