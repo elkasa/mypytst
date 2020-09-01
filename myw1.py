@@ -9,8 +9,8 @@ from os.path import basename
 
 
 '''
-version 1.8
-28/08  fix es 
+version 1.9
+01/09  add fb with inverted freq
 '''
 
 current_dir = pathlib.Path.cwd()
@@ -56,7 +56,7 @@ def validate(ae, em, bf, res):
         bf2 = bf[0].split(";")[6]
         bf3 = bf[1].split(";")[5]
         bf4 = bf[1].split(";")[6]
-        if bf1 == f2 and bf2 == f3 and bf3 == f4 and bf4 == f5:
+        if (bf1 == f2 and bf2 == f3 and bf3 == f4 and bf4 == f5) or (bf1 == f4 and bf2 == f5 and bf3 == f2 and bf4 == f3):
             lae = ae.split(";")
             lae[2] = ""
             id = lae[3]
@@ -80,7 +80,12 @@ def validate(ae, em, bf, res):
         bf4 = bf[1].split(";")[6]
         bf5 = bf[2].split(";")[5]
         bf6 = bf[2].split(";")[6]
-        if bf1 == f0 and bf2 == f1 and bf3 == f2 and bf4 == f3 and bf5 == f4 and bf6 == f5:
+        if (bf1 == f0 and bf2 == f1 and bf3 == f2 and bf4 == f3 and bf5 == f4 and bf6 == f5) or \
+        (bf1 == f0 and bf2 == f1 and bf3 == f4 and bf4 == f5 and bf5 == f2 and bf6 == f3)or\
+        (bf1 == f2 and bf2 == f3 and bf3 == f0 and bf4 == f1 and bf5 == f4 and bf6 == f5)or \
+        (bf1 == f2 and bf2 == f3 and bf3 == f4 and bf4 == f5 and bf5 == f0 and bf6 == f1)or \
+        (bf1 == f4 and bf2 == f5 and bf3 == f0 and bf4 == f1 and bf5 == f2 and bf6 == f3)or\
+        (bf1 == f4 and bf2 == f5 and bf3 == f2 and bf4 == f3 and bf5 == f0 and bf6 == f1):
             lae = ae.split(";")
             lae[2] = ""
             id = lae[3]
