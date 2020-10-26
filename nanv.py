@@ -107,8 +107,13 @@ def newprocess(filename):
                                 eml.append(';'.join(em).strip())
                                 out_file.write('%s' % eml[0])
                         bf=f.readline()
-                        out_file.write('%s' % eml[0])
-                        out_file.write('%s' % bf)
+                        if line[0:2] == "BF":
+                          lbf=[]
+                          bf=line.split(';')
+                          bf[5]="3570"
+                          bf[6]="3640"
+                          bfl.append(';'.join(bf).strip())
+                          out_file.write('%s' % bfl[0])
                 if line[0:2] == "DN":
                     out_file.write('%s' % line)
                     out_file.write('%s' % line)
