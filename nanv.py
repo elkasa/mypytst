@@ -9,7 +9,7 @@ from os.path import basename
 
 
 '''
-version 1.94
+version 1.95
 29/10  ANN
 '''
 
@@ -96,7 +96,7 @@ def newprocess(filename):
                         if line[0:2] == "EM":
                             eml=[]
                             em=line.split(';')
-                            em[7]="70MD2WEW"
+                            em[7]="70M0D2W"
                             #print(em)
                             if isfloat(em[8]):
                                 p=float(em[8]) - coef
@@ -114,6 +114,7 @@ def newprocess(filename):
                             bf[6]="3640"
                             bfl.append(';'.join(bf).strip())
                             out_file.write('%s\n' % bfl[0])
+                            break
                     else:
                         out_file.write('%s' % line)
                 if line[0:2] == "EM":
@@ -130,13 +131,12 @@ def newprocess(filename):
                     es = line.strip()
                 if line[0:2] == "EN":
                     out_file.write('%s' % line)
-
                 line = f.readline()
             en1="EN;;A;;18;;"
             en2="EN;;A;;19;;"
             en3="EN;;A;;14;;"
             out_file.write('%s\n' % en1)
-            out_file.write('%s' % en2)
+            out_file.write('%s\n' % en2)
             out_file.write('%s' % en3)
 
 """
