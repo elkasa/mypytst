@@ -9,7 +9,7 @@ from os.path import basename
 
 
 '''
-version 1.93
+version 1.94
 29/10  ANN
 '''
 
@@ -98,9 +98,9 @@ def newprocess(filename):
                             em=line.split(';')
                             em[7]="70MD2WEW"
                             #print(em)
-                            if isfloat(em[10]):
-                                p=float(em[10]) - coef
-                                em[8]=str(round(p,2))
+                            if isfloat(em[8]):
+                                p=float(em[8]) - coef
+                                em[10]=str(round(p,2))
                                 eml.append(';'.join(em).strip())
                                 out_file.write('%s\n' % eml[0])
                             else:
@@ -134,8 +134,10 @@ def newprocess(filename):
                 line = f.readline()
             en1="EN;;A;;18;;"
             en2="EN;;A;;19;;"
+            en3="EN;;A;;14;;"
             out_file.write('%s\n' % en1)
             out_file.write('%s' % en2)
+            out_file.write('%s' % en3)
 
 """
 end func process
