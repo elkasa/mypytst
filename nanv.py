@@ -9,8 +9,8 @@ from os.path import basename
 
 
 '''
-version 1.92
-25/10  ANN
+version 1.93
+29/10  ANN
 '''
 
 current_dir = pathlib.Path.cwd()
@@ -73,7 +73,7 @@ def newprocess(filename):
     # data.clear()
     # data3.clear()
     fullstr="ANA0000"
-    coef=1.03
+    coef=5.2
     out_filename = dirout/filename.name
     
     with open(filename,encoding='utf-8', errors='ignore') as f:
@@ -91,46 +91,51 @@ def newprocess(filename):
                         ae=line.split(';')
                         ae[6]="79"
                         ael.append(';'.join(ae).strip())
-                        out_file.write('%s' % ael[0])
+                        out_file.write('%s\n' % ael[0])
                         line=f.readline()
                         if line[0:2] == "EM":
                             eml=[]
                             em=line.split(';')
                             em[7]="70MD2WEW"
-                            print(em)
+                            #print(em)
                             if isfloat(em[10]):
-                                p=float(em[10])*coef
-                                em[8]=round(p,2)
+                                p=float(em[10]) - coef
+                                em[8]=str(round(p,2))
                                 eml.append(';'.join(em).strip())
-                                out_file.write('%s' % eml[0])
+                                out_file.write('%s\n' % eml[0])
                             else:
                                 eml.append(';'.join(em).strip())
-                                out_file.write('%s' % eml[0])
-                        bf=f.readline()
+                                out_file.write('%s\n' % eml[0])
+                        line=f.readline()
                         if line[0:2] == "BF":
-                          lbf=[]
-                          bf=line.split(';')
-                          bf[5]="3570"
-                          bf[6]="3640"
-                          bfl.append(';'.join(bf).strip())
-                          out_file.write('%s' % bfl[0])
+                            bfl=[]
+                            bf=line.split(';')
+                            bf[5]="3570"
+                            bf[6]="3640"
+                            bfl.append(';'.join(bf).strip())
+                            out_file.write('%s\n' % bfl[0])
+                    else:
+                        out_file.write('%s' % line)
+                if line[0:2] == "EM":
+                    out_file.write('%s' % line)
+                if line[0:2] == "BF":
+                    out_file.write('%s' % line)
                 if line[0:2] == "DN":
                     out_file.write('%s' % line)
                     out_file.write('%s' % line)
-                    print(line)
                 if line[0:2] == "SA":
                     out_file.write('%s' % line)
-                    print(line)
                 if line[0:2] == "ES":
                     out_file.write('%s' % line)
-                    print(line)
                     es = line.strip()
                 if line[0:2] == "EN":
                     out_file.write('%s' % line)
-                    print(line)
 
                 line = f.readline()
-
+            en1="EN;;A;;18;;"
+            en2="EN;;A;;19;;"
+            out_file.write('%s\n' % en1)
+            out_file.write('%s' % en2)
 
 """
 end func process
