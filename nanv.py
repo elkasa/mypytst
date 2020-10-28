@@ -142,9 +142,6 @@ def newprocess(filename):
                         else:
                             esf.append(';'.join(les).strip())
                             out_file.write('%s\n' % esf[0])
-
-                    out_file.write('%s' % line)
-                    es = line.strip()
                 if line[0:2] == "EN":
                     out_file.write('%s' % line)
                 line = f.readline()
