@@ -114,7 +114,7 @@ def newprocess(filename):
                             bf[6]="3640"
                             bfl.append(';'.join(bf).strip())
                             out_file.write('%s\n' % bfl[0])
-                            break
+                            line=""
                     else:
                         out_file.write('%s' % line)
                 if line[0:2] == "EM":
