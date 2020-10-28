@@ -9,8 +9,8 @@ from os.path import basename
 
 
 '''
-version 1.95
-29/10  ANN
+version 1.96
+28/10  ANN
 '''
 
 current_dir = pathlib.Path.cwd()
@@ -123,10 +123,26 @@ def newprocess(filename):
                     out_file.write('%s' % line)
                 if line[0:2] == "DN":
                     out_file.write('%s' % line)
-                    out_file.write('%s' % line)
                 if line[0:2] == "SA":
                     out_file.write('%s' % line)
                 if line[0:2] == "ES":
+                    esf=[]
+                    es = line.strip()
+                    les = es.split(";")
+                    if les[2] == "S":
+                        esf.append(';'.join(les).strip())
+                        out_file.write('%s\n' % esf[0])
+                    elif les[2] == "" or les[2] == "A":
+                        if les[10] == "":
+                            y = round(random.uniform(0.6, 1.01), 2)
+                            les[10] = str(y)
+                            les[4]=str(1)
+                            esf.append(';'.join(les).strip())
+                            out_file.write('%s\n' % esf[0])
+                        else:
+                            esf.append(';'.join(les).strip())
+                            out_file.write('%s\n' % esf[0])
+
                     out_file.write('%s' % line)
                     es = line.strip()
                 if line[0:2] == "EN":
