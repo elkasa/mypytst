@@ -55,22 +55,26 @@ def print_out(filename,ae):
     out_filename= dirout/filename.name
     if filename.is_file():
         with open(filename,encoding='utf-8', errors='ignore') as f:
+            #print(filename)
             lines= f.readlines()
             res=[]
-            res=lines[:4] + ae 
+            res=lines[:4] + ae
             with open(out_filename, 'w') as out_file:
                 for i in range(0, 3):
                     out_file.write('%s' % res[i])
                 for i in range(4, len(res)):
-                    print(res[i])
                     out_file.write('%s\n' % res[i])
+                for i in range(4, len(lines)):
+                    #print(lines[i])
+                    out_file.write('%s' % lines[i])
+
 
         
 with open(action_filename,encoding='utf-8', errors='ignore') as f:
     lines=f.readlines()
     for i, line in enumerate(lines[2:]):
             #:q
-            print(line)
+            #print(line)
             data=line.split(":")
             filename=data[0]
             Tcode=getTcode(filename)
@@ -86,7 +90,7 @@ with open(action_filename,encoding='utf-8', errors='ignore') as f:
                 ae.append(';'.join(em))
                 ae.append(';'.join(bf))
             #print(ae)
-            #print_out(data[0],ae)        
+            print_out(data[0],ae)        
         
 
 logging.info('End Post processing')
